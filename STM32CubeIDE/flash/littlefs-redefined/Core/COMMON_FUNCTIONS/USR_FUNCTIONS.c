@@ -46,15 +46,15 @@ void myprintf(const char *fmt, ...) {
 //	}
 	uint32_t current_tick = HAL_GetTick();
 	while (HAL_UART_GetState(&DEBUG_STREAM) == HAL_UART_STATE_BUSY_TX) {
-		if (HAL_GetTick() - current_tick > 2000) {
+		if (HAL_GetTick() - current_tick > 20) {
 			break;
 		}
 	}
-	DEBUG_DATA_TX_FLAG = 0;
+	uint8_t DEBUG_DATA_TX_FLAG = 0;
 	uint32_t tickstart_ = HAL_GetTick();
 	HAL_UART_Transmit_IT(&DEBUG_STREAM, (uint8_t*) temp, len);
 
-	while (DEBUG_DATA_TX_FLAG != 1 && (HAL_GetTick() - tickstart_ < 2000)) {
+	while (DEBUG_DATA_TX_FLAG != 1 && (HAL_GetTick() - tickstart_ < 200)) {
 	}
 	DEBUG_DATA_TX_FLAG = 0;
 #endif
@@ -96,148 +96,148 @@ uint32_t USR_GetuTick() {
  */
 void INIT_VAR() {
 
-	UART_STATE = 0;
-	SPI_STATE = 0;
-	HAL_STATUS = 0;
-
-	PC_Data_Len = 0;
-
-//	F2I.f = 0.0;
-
-	memset(PC_DATA, '\0', DATA_BUFFER_LEN);
-	memset(COM_RX_DATA_BUFFER, '\0', COM_RX_DATA_BUFFER_LEN);
-	memset(COM_RX_DATA, '\0', COM_RX_DATA_BUFFER_LEN);
-	memset(COM_TX_DATA_BUFFER, '\0', COM_TX_DATA_BUFFER_LEN);
-	memset(GS_CMD, '\0', CMD_LEN);
-
-	ADC_SUP = 0;
-
-	memset(ADC1_DMA_TEMP, '\0', sizeof(ADC1_DMA_TEMP));
-	memset(ADC2_DMA_TEMP, '\0', sizeof(ADC2_DMA_TEMP));
-	memset((char*) I_ADC1_RAW, '\0', sizeof(I_ADC1_RAW));
-	memset((char*) I_ADC2_RAW, '\0', sizeof(I_ADC2_RAW));
-	memset(averageRaw, '\0', sizeof(averageRaw));
-	memset(averageRaw_2, '\0', sizeof(averageRaw_2));
-	memset(I_ADC1_Data, '\0', sizeof(I_ADC1_Data));
-	memset(I_ADC2_Data, '\0', sizeof(I_ADC2_Data));
-
-	memset(E_ADC0_RAW, '\0', sizeof(E_ADC0_RAW)); // E_ADC_RAW is a 2 byte(uint16_t) variable, so multiply the length by no of bytes per index
-	memset(E_ADC1_RAW, '\0', sizeof(E_ADC1_RAW));
-	memset(EXT_ADC_0, '\0', sizeof(EXT_ADC_0));
-	memset(EXT_ADC_1, '\0', sizeof(EXT_ADC_1));
-	memset(EXT_ADC_0_TEMP, '\0', sizeof(EXT_ADC_0_TEMP));
-	memset(TEMPS, '\0', sizeof(TEMPS));
-
-	memset(SAT_TEMPS, '\0', sizeof(SAT_TEMPS));
-	memset(SAT_VOLTS, '\0', sizeof(SAT_VOLTS));
-	memset(SAT_CURR, '\0', sizeof(SAT_CURR));
-	memset(SAT_IMU, '\0', sizeof(SAT_IMU));
-
-	memset(RSV_TABLE, '\0', sizeof(RSV_TABLE));
-	memset(RESET_REFRESH_DATA, '\0', RESET_DATA_LEN);
-	memset(RESET_Data_Buff, '\0', RESET_DATA_LEN);
-
-	memset(&RESET_Rx, '\0', sizeof(RESET_Rx));
-	memset(&RESET_Tx, '\0', sizeof(RESET_Tx));
-
-	memset(HK_Data_Buff, '\0', HK_DATA_LEN);
-
-	memset(MSN1_Data_Buff, '\0', DATA_BUFFER_LEN);
-	memset(MSN2_Data_Buff, '\0', DATA_BUFFER_LEN);
-	memset(MSN3_Data_Buff, '\0', DATA_BUFFER_LEN);
-	memset(FLAG_DATA_BUFF, '\0', FLAG_DATA_LEN);
-	memset(SAT_LOG_BUFF, '\0', SAT_LOG_LEN);
-	memset(BEACON_DATA, '\0', BEACON_DATA_LEN);
-	memset(&SAT_HEALTH, '\0', sizeof(SAT_HEALTH));
-	memset(&SOLAR_STATUS, '\0', SOLAR_STATUS_DATA_LEN);
-	memset(&BEACON_TYPE_A, '\0', 32);
-	memset(&BEACON_TYPE_B, '\0', 32);
-
-	R_mSEC = 0;
-	mSEC = 0;
-	TIM_DAY = 0;
-	TIM_SEC = 0;
-	TIM_MIN = 0;
-	TIM_HOUR = 0;
-	TIM_DAY = 0;
-	HK_TIME_COUNTER = 0;
-	BEACON_TIMER = 0;
-	BEACON_TYPE = 0;
-	LAST_RST_HOUR = 0;
-
-	RSV_MIN = 0;
-	MSN_TIME = 0;
-
-	ADC1_CONV_CPLT_FLAG = 0;
-	ADC2_CONV_CPLT_FLAG = 0;
-	DEBUG_DATA_RX_FLAG = 0;
-	COM_DATA_RX_FLAG = 0;
-	RESET_DATA_RX_FLAG = 0;
-	MSN1_DATA_RX_FLAG = 0;
-	MSN2_DATA_RX_FLAG = 0;
-	MSN3_DATA_RX_FLAG = 0;
-	DEBUG_DATA_TX_FLAG = 0;
-	COM_DATA_TX_FLAG = 0;
-	RESET_DATA_TX_FLAG = 0;
-	MSN1_DATA_TX_FLAG = 0;
-	MSN2_DATA_TX_FLAG = 0;
-	MSN3_DATA_TX_FLAG = 0;
-	BEACON_FLAG = 0;
-	COM_TEMP_Rx = 0;
-	COM_MSN3_TEMP_Rx = 0;
-	COM_MSN3_RX_COUNT = 0;
-
-	SAT_HEALTH.HEAD = HEADER;
-
-	OPER_MODES = NRML_MODE;
-
-	OPERA_FLAGS.MSN1_EN_FLAG = ON;
-	OPERA_FLAGS.MSN2_EN_FLAG = ON;
-	OPERA_FLAGS.MSN3_EN_FLAG = ON;
-	OPERA_FLAGS.COM_EN_FLAG = ON;
-	OPERA_FLAGS.LOG_EN_FLAG = ON;
-	OPERA_FLAGS.FM_EN_FLAG = ON;
-	OPERA_FLAGS.RSV_MSN_EXE_FLAG = ON;
-	OPERA_FLAGS.TEL_TX_FLAG = ON;
-
-	RSV_CHECK = 0;
-	RSV_CMD_1 = 0;
-	RSV_CMD_2 = 0;
-	RSV_CMD_3 = 0;
-	RSV_CMD_4 = 0;
-	RSV_TIME = 1;
-
-	MSN_STATUS = 0;
-
-	GLOBAL_SYS_RST_FLAG = 0;
-	I_ADC1_CONV_CPLT = 0;
-	ANT_DEPLOY_STATUS = 0;
-	DCOMMAND_RX_SUCCESS = 0;
-	MSN1_FLAG = 0;
-	MSN2_FLAG = 0;
-	MSN3_FLAG = 0;
-	KILL_SWITCH = 0;
-
-	PC_CMD = 0;
-	HK_FLAG = 0;
-
-	ERR_CODE = 0;
-
-	HK_DATA_CURRENT_ADDRESS = HK_DATA_START_ADDRESS;
-	SAT_LOG_CURRENT_ADDRESS = SAT_LOG_START_ADDRESS;
-//	RAD_MSN_DATA_CURRENT_ADDRESS = 0;
-	PACDS_MSN_DATA_CURRENT_ADDRESS = PACDS_MSN_DATA_START_ADDRESS;
-	SPDM_MSN_DATA_CURRENT_ADDRESS = SPDM_MSN_DATA_START_ADDRESS;
-	CAM_MSN_DATA_CURRENT_ADDRESS = CAM_MSN_DATA_START_ADDRESS;
-	CAM_MSN_IMG_INFO_CURRENT_ADDRESS = CAM_MSN_IMG_INFO_START_ADDRESS;
-	FLAG_DATA_CURRENT_ADDRESS = FLAG_DATA_START_ADDRESS;
-	RSV_DATA_CURRENT_ADDRESS = RSV_TABLE_START_ADDRESS;
-	ADDRESS_DATA_CURRENT_ADDRESS = ADDRESS_DATA_START_ADDRESS;
-
-	memset(ADDR_BUFFER, '\0', ADDRESS_DATA_SIZE);
-
-	reg_stat = 0;
-	reg_stat_flag = 0;
+//	UART_STATE = 0;
+//	SPI_STATE = 0;
+//	HAL_STATUS = 0;
+//
+//	PC_Data_Len = 0;
+//
+////	F2I.f = 0.0;
+//
+//	memset(PC_DATA, '\0', DATA_BUFFER_LEN);
+//	memset(COM_RX_DATA_BUFFER, '\0', COM_RX_DATA_BUFFER_LEN);
+//	memset(COM_RX_DATA, '\0', COM_RX_DATA_BUFFER_LEN);
+//	memset(COM_TX_DATA_BUFFER, '\0', COM_TX_DATA_BUFFER_LEN);
+//	memset(GS_CMD, '\0', CMD_LEN);
+//
+//	ADC_SUP = 0;
+//
+//	memset(ADC1_DMA_TEMP, '\0', sizeof(ADC1_DMA_TEMP));
+//	memset(ADC2_DMA_TEMP, '\0', sizeof(ADC2_DMA_TEMP));
+//	memset((char*) I_ADC1_RAW, '\0', sizeof(I_ADC1_RAW));
+//	memset((char*) I_ADC2_RAW, '\0', sizeof(I_ADC2_RAW));
+//	memset(averageRaw, '\0', sizeof(averageRaw));
+//	memset(averageRaw_2, '\0', sizeof(averageRaw_2));
+//	memset(I_ADC1_Data, '\0', sizeof(I_ADC1_Data));
+//	memset(I_ADC2_Data, '\0', sizeof(I_ADC2_Data));
+//
+//	memset(E_ADC0_RAW, '\0', sizeof(E_ADC0_RAW)); // E_ADC_RAW is a 2 byte(uint16_t) variable, so multiply the length by no of bytes per index
+//	memset(E_ADC1_RAW, '\0', sizeof(E_ADC1_RAW));
+//	memset(EXT_ADC_0, '\0', sizeof(EXT_ADC_0));
+//	memset(EXT_ADC_1, '\0', sizeof(EXT_ADC_1));
+//	memset(EXT_ADC_0_TEMP, '\0', sizeof(EXT_ADC_0_TEMP));
+//	memset(TEMPS, '\0', sizeof(TEMPS));
+//
+//	memset(SAT_TEMPS, '\0', sizeof(SAT_TEMPS));
+//	memset(SAT_VOLTS, '\0', sizeof(SAT_VOLTS));
+//	memset(SAT_CURR, '\0', sizeof(SAT_CURR));
+//	memset(SAT_IMU, '\0', sizeof(SAT_IMU));
+//
+//	memset(RSV_TABLE, '\0', sizeof(RSV_TABLE));
+//	memset(RESET_REFRESH_DATA, '\0', RESET_DATA_LEN);
+//	memset(RESET_Data_Buff, '\0', RESET_DATA_LEN);
+//
+//	memset(&RESET_Rx, '\0', sizeof(RESET_Rx));
+//	memset(&RESET_Tx, '\0', sizeof(RESET_Tx));
+//
+//	memset(HK_Data_Buff, '\0', HK_DATA_LEN);
+//
+//	memset(MSN1_Data_Buff, '\0', DATA_BUFFER_LEN);
+//	memset(MSN2_Data_Buff, '\0', DATA_BUFFER_LEN);
+//	memset(MSN3_Data_Buff, '\0', DATA_BUFFER_LEN);
+//	memset(FLAG_DATA_BUFF, '\0', FLAG_DATA_LEN);
+//	memset(SAT_LOG_BUFF, '\0', SAT_LOG_LEN);
+//	memset(BEACON_DATA, '\0', BEACON_DATA_LEN);
+//	memset(&SAT_HEALTH, '\0', sizeof(SAT_HEALTH));
+//	memset(&SOLAR_STATUS, '\0', SOLAR_STATUS_DATA_LEN);
+//	memset(&BEACON_TYPE_A, '\0', 32);
+//	memset(&BEACON_TYPE_B, '\0', 32);
+//
+//	R_mSEC = 0;
+//	mSEC = 0;
+//	TIM_DAY = 0;
+//	TIM_SEC = 0;
+//	TIM_MIN = 0;
+//	TIM_HOUR = 0;
+//	TIM_DAY = 0;
+//	HK_TIME_COUNTER = 0;
+//	BEACON_TIMER = 0;
+//	BEACON_TYPE = 0;
+//	LAST_RST_HOUR = 0;
+//
+//	RSV_MIN = 0;
+//	MSN_TIME = 0;
+//
+//	ADC1_CONV_CPLT_FLAG = 0;
+//	ADC2_CONV_CPLT_FLAG = 0;
+//	DEBUG_DATA_RX_FLAG = 0;
+//	COM_DATA_RX_FLAG = 0;
+//	RESET_DATA_RX_FLAG = 0;
+//	MSN1_DATA_RX_FLAG = 0;
+//	MSN2_DATA_RX_FLAG = 0;
+//	MSN3_DATA_RX_FLAG = 0;
+//	DEBUG_DATA_TX_FLAG = 0;
+//	COM_DATA_TX_FLAG = 0;
+//	RESET_DATA_TX_FLAG = 0;
+//	MSN1_DATA_TX_FLAG = 0;
+//	MSN2_DATA_TX_FLAG = 0;
+//	MSN3_DATA_TX_FLAG = 0;
+//	BEACON_FLAG = 0;
+//	COM_TEMP_Rx = 0;
+//	COM_MSN3_TEMP_Rx = 0;
+//	COM_MSN3_RX_COUNT = 0;
+//
+//	SAT_HEALTH.HEAD = HEADER;
+//
+//	OPER_MODES = NRML_MODE;
+//
+//	OPERA_FLAGS.MSN1_EN_FLAG = ON;
+//	OPERA_FLAGS.MSN2_EN_FLAG = ON;
+//	OPERA_FLAGS.MSN3_EN_FLAG = ON;
+//	OPERA_FLAGS.COM_EN_FLAG = ON;
+//	OPERA_FLAGS.LOG_EN_FLAG = ON;
+//	OPERA_FLAGS.FM_EN_FLAG = ON;
+//	OPERA_FLAGS.RSV_MSN_EXE_FLAG = ON;
+//	OPERA_FLAGS.TEL_TX_FLAG = ON;
+//
+//	RSV_CHECK = 0;
+//	RSV_CMD_1 = 0;
+//	RSV_CMD_2 = 0;
+//	RSV_CMD_3 = 0;
+//	RSV_CMD_4 = 0;
+//	RSV_TIME = 1;
+//
+//	MSN_STATUS = 0;
+//
+//	GLOBAL_SYS_RST_FLAG = 0;
+//	I_ADC1_CONV_CPLT = 0;
+//	ANT_DEPLOY_STATUS = 0;
+//	DCOMMAND_RX_SUCCESS = 0;
+//	MSN1_FLAG = 0;
+//	MSN2_FLAG = 0;
+//	MSN3_FLAG = 0;
+//	KILL_SWITCH = 0;
+//
+//	PC_CMD = 0;
+//	HK_FLAG = 0;
+//
+//	ERR_CODE = 0;
+//
+//	HK_DATA_CURRENT_ADDRESS = HK_DATA_START_ADDRESS;
+//	SAT_LOG_CURRENT_ADDRESS = SAT_LOG_START_ADDRESS;
+////	RAD_MSN_DATA_CURRENT_ADDRESS = 0;
+//	PACDS_MSN_DATA_CURRENT_ADDRESS = PACDS_MSN_DATA_START_ADDRESS;
+//	SPDM_MSN_DATA_CURRENT_ADDRESS = SPDM_MSN_DATA_START_ADDRESS;
+//	CAM_MSN_DATA_CURRENT_ADDRESS = CAM_MSN_DATA_START_ADDRESS;
+//	CAM_MSN_IMG_INFO_CURRENT_ADDRESS = CAM_MSN_IMG_INFO_START_ADDRESS;
+//	FLAG_DATA_CURRENT_ADDRESS = FLAG_DATA_START_ADDRESS;
+//	RSV_DATA_CURRENT_ADDRESS = RSV_TABLE_START_ADDRESS;
+//	ADDRESS_DATA_CURRENT_ADDRESS = ADDRESS_DATA_START_ADDRESS;
+//
+//	memset(ADDR_BUFFER, '\0', ADDRESS_DATA_SIZE);
+//
+//	reg_stat = 0;
+//	reg_stat_flag = 0;
 
 }
 
@@ -274,8 +274,8 @@ void Setup() {
 #else
 	HAL_Delay(100);
 #endif
-	HAL_UART_Receive_IT(&RESET_STREAM, &RST_TEMP_Rx, 1);
-	HAL_UART_Receive_IT(&RESET_ALT_STREAM, &RST_TEMP2_Rx, 1);
+//	HAL_UART_Receive_IT(&RESET_STREAM, &RST_TEMP_Rx, 1);
+//	HAL_UART_Receive_IT(&RESET_ALT_STREAM, &RST_TEMP2_Rx, 1);
 	HAL_UART_Receive_IT(&DEBUG_STREAM, PC_DATA, CMD_LEN);
 
 #ifdef DEBUG_MODE
@@ -291,7 +291,7 @@ void Setup() {
 	Reset_CMD_PWR_ON_OFF(40);
 	Configure_Flash_Pins();		//setting the hold, WP pins of FM high
 	FLASH_INIT_EXECUTION();
-	Send_Reset_Data_Flag();
+//	Send_Reset_Data_Flag();
 	uint8_t i = 0;
 	while (!Check_Reset_Data() && i < 3) {
 		Send_Reset_Data_Flag();
@@ -325,13 +325,13 @@ void Setup() {
 		myprintf("Turning on kill switch");
 #endif
 #endif
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_5, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_6, GPIO_PIN_SET);	//enabling kill switch1 driver
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_2, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_8, GPIO_PIN_SET);	//enabling kill switch1 driver
 
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET); // KILL_SWITCH2_-
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET); // KILL_SWITCH_+
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);	//enabling kill switch2 driver
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_4, GPIO_PIN_SET); // KILL_SWITCH2_-
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_5, GPIO_PIN_RESET); // KILL_SWITCH_+
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_SET);	//enabling kill switch2 driver
 //		HAL_Delay(10);
 
 //		HAL_Delay(10);
@@ -426,10 +426,10 @@ void FLASH_INIT_EXECUTION() {
 #else
 			#endif //ifndef TRACE_MODE
 #endif //ifdef DEBUG_MODE
-
-	Get_Address_Current_Address(); //checking for the latest writing address for the flash
-
-	Get_Mission_Data_Address();	//Loading the Mission data address from the Flash
+//
+//	Get_Address_Current_Address(); //checking for the latest writing address for the flash
+//
+//	Get_Mission_Data_Address();	//Loading the Mission data address from the Flash
 //	Check_CAM_Address();
 //	Check_HK_Data_Address();
 //	Check_SAT_LOG_Address();
@@ -438,13 +438,13 @@ void FLASH_INIT_EXECUTION() {
 #ifdef DEBUG_MODE
 #ifdef TRACE_MODE
 #else
-	myprintf("retrieved mission data address from FM......\r\n");
-	Print_Address_Location();//to print the address data into the serial monitor
+//	myprintf("retrieved mission data address from FM......\r\n");
+//	Print_Address_Location();//to print the address data into the serial monitor
 #endif
 #endif
-	Check_Flag_Data(); ///checking for the flag data from flash memory and updating
-
-	Get_RSV_From_Flash(); //checking if there is any reservation command in the FM
+//	Check_Flag_Data(); ///checking for the flag data from flash memory and updating
+//
+//	Get_RSV_From_Flash(); //checking if there is any reservation command in the FM
 
 //	HAL_Delay(4000);
 
@@ -475,8 +475,8 @@ void Refresh_WDG_STM() {
 //			+ RESET_REFRESH_DATA[3];
 //	RESET_REFRESH_DATA[5] = FOOTER;
 	UPDATE_RST_DATA(&RESET_Tx, RESET_FLAG_TYPE);
-	UART_STATE = MainToSubSys(&RESET_STREAM, (uint8_t*) &RESET_Tx,
-	RESET_DATA_TX_LEN, 1);
+//	UART_STATE = MainToSubSys(&RESET_STREAM, (uint8_t*) &RESET_Tx,
+//	RESET_DATA_TX_LEN, 1);
 	uint32_t time_count = HAL_GetTick();
 	while (RESET_DATA_TX_FLAG != 1) {
 		if (HAL_GetTick() - time_count > 50) {
@@ -547,10 +547,10 @@ void Send_Reset_Data_Flag() {
 	ERR_CODE = 0;
 
 	UPDATE_RST_DATA(&RESET_Tx, RESET_FLAG_TYPE);
-	HAL_UART_Transmit_IT(&RESET_STREAM, (uint8_t*) &RESET_Tx,
-	RESET_DATA_TX_LEN);
-	HAL_UART_Transmit_IT(&RESET_ALT_STREAM, (uint8_t*) &RESET_Tx,
-	RESET_DATA_TX_LEN);
+//	HAL_UART_Transmit_IT(&RESET_STREAM, (uint8_t*) &RESET_Tx,
+//	RESET_DATA_TX_LEN);
+//	HAL_UART_Transmit_IT(&RESET_ALT_STREAM, (uint8_t*) &RESET_Tx,
+//	RESET_DATA_TX_LEN);
 	uint32_t current_tick = HAL_GetTick();
 
 	RESET_DATA_RX_FLAG = 0;
@@ -603,34 +603,34 @@ void Send_Reset_Data_Flag() {
  *
  */
 void Send_ACK_Reset(uint8_t status) {
-	uint8_t ACK[6] = { '\0' };
-	switch (status) {
-	case 1:
-		//it means success ACK
-		ACK[0] = HEADER;
-		ACK[1] = 0x12;
-		ACK[2] = 0xAC;
-		ACK[3] = FOOTER;
-		ACK[4] = 0xff;
-		ACK[5] = 0xff;
-		HAL_UART_Transmit(&RESET_STREAM, ACK, 6, 1000);
-		HAL_UART_Transmit(&RESET_ALT_STREAM, ACK, 6, 1000);
-		break;
-	case 2:
-
-		ACK[0] = HEADER;
-		ACK[1] = 0x12;
-		ACK[2] = 0XEE;
-		ACK[3] = FOOTER;
-		ACK[4] = 0xff;
-		ACK[5] = 0xff;
-		HAL_UART_Transmit(&RESET_STREAM, ACK, 6, 1000);
-		HAL_UART_Transmit(&RESET_ALT_STREAM, ACK, 6, 1000);
-		//it means Failure ACK
-		break;
-	default:
-		break;
-	}
+//	uint8_t ACK[6] = { '\0' };
+//	switch (status) {
+//	case 1:
+//		//it means success ACK
+//		ACK[0] = HEADER;
+//		ACK[1] = 0x12;
+//		ACK[2] = 0xAC;
+//		ACK[3] = FOOTER;
+//		ACK[4] = 0xff;
+//		ACK[5] = 0xff;
+//		HAL_UART_Transmit(&RESET_STREAM, ACK, 6, 1000);
+//		HAL_UART_Transmit(&RESET_ALT_STREAM, ACK, 6, 1000);
+//		break;
+//	case 2:
+//
+//		ACK[0] = HEADER;
+//		ACK[1] = 0x12;
+//		ACK[2] = 0XEE;
+//		ACK[3] = FOOTER;
+//		ACK[4] = 0xff;
+//		ACK[5] = 0xff;
+//		HAL_UART_Transmit(&RESET_STREAM, ACK, 6, 1000);
+//		HAL_UART_Transmit(&RESET_ALT_STREAM, ACK, 6, 1000);
+//		//it means Failure ACK
+//		break;
+//	default:
+//		break;
+//	}
 }
 
 /*
@@ -781,9 +781,9 @@ HAL_StatusTypeDef MainToSubSys(UART_HandleTypeDef *uart_port, uint8_t *data,
 			if (uart_port == &COM_TCV_STREAM) {
 				COM_DATA_TX_FLAG = 1;
 			}
-			if (uart_port == &RESET_STREAM) {
-				RESET_DATA_TX_FLAG = 1;
-			}
+//			if (uart_port == &RESET_STREAM) {
+//				RESET_DATA_TX_FLAG = 1;
+//			}
 			if (uart_port == &RESET_ALT_STREAM) {
 				RESET_DATA_TX_FLAG = 1;
 			}
@@ -800,9 +800,9 @@ HAL_StatusTypeDef MainToSubSys(UART_HandleTypeDef *uart_port, uint8_t *data,
 			if (uart_port == &COM_TCV_STREAM) {
 				COM_DATA_TX_FLAG = 0;
 			}
-			if (uart_port == &RESET_STREAM) {
-				RESET_DATA_TX_FLAG = 0;
-			}
+//			if (uart_port == &RESET_STREAM) {
+//				RESET_DATA_TX_FLAG = 0;
+//			}
 			if (uart_port == &RESET_ALT_STREAM) {
 				RESET_DATA_TX_FLAG = 0;
 			}
@@ -1432,14 +1432,6 @@ void Configure_Flash_Pins(void) {
 
 //Setting the hold, WP pins high
 	HAL_GPIO_WritePin(MAIN_FM_CS_GPIO_Port, MAIN_FM_CS_Pin, SET);
-	HAL_GPIO_WritePin(MAIN_FM_HOLD_GPIO_Port, MAIN_FM_HOLD_Pin, SET);
-	HAL_GPIO_WritePin(MAIN_FM_RESET_GPIO_Port, MAIN_FM_RESET_Pin, SET);
-	HAL_GPIO_WritePin(MAIN_FM_WP_GPIO_Port, MAIN_FM_WP_Pin, SET);
-
-	HAL_GPIO_WritePin(SMSN_FM_CS_GPIO_Port, SMSN_FM_CS_Pin, SET);
-	HAL_GPIO_WritePin(SMSN_FM_HOLD_GPIO_Port, SMSN_FM_HOLD_Pin, SET);
-	HAL_GPIO_WritePin(SMSN_FM_RST_GPIO_Port, SMSN_FM_RST_Pin, SET);
-	HAL_GPIO_WritePin(SMSN_FM_WP_GPIO_Port, SMSN_FM_WP_Pin, SET);
 
 }
 
@@ -1453,9 +1445,9 @@ void Configure_Flash_Pins(void) {
 
 void MAIN_FM_MODE() {
 //Activating MUX
-	HAL_GPIO_WritePin(SFM_MUX_EN_GPIO_Port, SFM_MUX_EN_Pin, RESET);
+	HAL_GPIO_WritePin(MUX_EN_GPIO_Port, MUX_EN_Pin, RESET);
 //SMSN_FM access to OBC
-	HAL_GPIO_WritePin(SMSN_FM_MODE_GPIO_Port, SMSN_FM_MODE_Pin, RESET);
+	HAL_GPIO_WritePin(MSN_FM_MODE_GPIO_Port, MSN_FM_MODE_Pin, RESET);
 }
 
 /*
@@ -1467,9 +1459,9 @@ void MAIN_FM_MODE() {
  */
 void MSN_FM_MODE() {
 //Activating MUX
-	HAL_GPIO_WritePin(SFM_MUX_EN_GPIO_Port, SFM_MUX_EN_Pin, RESET);
+	HAL_GPIO_WritePin(MUX_EN_GPIO_Port, MUX_EN_Pin, RESET);
 //  SMSN_FM access to MSN(s)
-	HAL_GPIO_WritePin(SMSN_FM_MODE_GPIO_Port, SMSN_FM_MODE_Pin, SET);
+	HAL_GPIO_WritePin(MSN_FM_MODE_GPIO_Port, MSN_FM_MODE_Pin, SET);
 }
 /*
  * @brief Disabling the MUX, results in Shared FM access being blocked
@@ -1480,7 +1472,7 @@ void MSN_FM_MODE() {
  */
 
 void MUX_DISABLE() {
-	HAL_GPIO_WritePin(SFM_MUX_EN_GPIO_Port, SFM_MUX_EN_Pin, SET);
+	HAL_GPIO_WritePin(MUX_EN_GPIO_Port, MUX_EN_Pin, SET);
 }
 
 /*
@@ -1653,53 +1645,53 @@ void Make_BEACON_Data(void) {
  * @retval	none
  *
  */
-void UPDATE_RST_DATA(RSTTx_DATASET_TypeDef *RESET_Tx, RST_CMD TYPE) {
-
-	if ((TYPE != OPER_MODE_1) && (TYPE != OPER_MODE_2) && (TYPE != OPER_MODE_3)
-			&& (TYPE != OPER_MODE_4) && (TYPE != RST_SAT)
-			&& (BEACON_FLAG != 1)) {
-		ADC1_DMA_CONVERT();
-		ADC2_DMA_CONVERT();
-		GET_EXT_ADC_DATA();
-		DATA_CONVERSION();
-		MAKE_SAT_TEMPS();
-		MAKE_SAT_VOLTS();
-		CHECK_POWER_STATE(SAT_HEALTH.BATT_VOLT);
-
-	}
-
-	RESET_Tx->HEAD = HEADER;
-	RESET_Tx->TIM_DAYS = TIM_DAY;
-	RESET_Tx->TIM_HOUR = TIM_HOUR;
-	RESET_Tx->TIM_SEC = TIM_SEC;
-	RESET_Tx->CMD = TYPE;
-	if (ANT_DEPLOY_STATUS) {
-		RESET_Tx->ANT_DEP_STAT = 0xDE;
-	} else {
-		RESET_Tx->ANT_DEP_STAT = 0x00;
-	}
-
-	RESET_Tx->UL_STAT = DCOMMAND_RX_SUCCESS;
-	RESET_Tx->OPER_MODE = OPER_MODES;
-	RESET_Tx->MSN_FLAG = MSN_STATUS;
-	RESET_Tx->RSV_FLAG = SAT_HEALTH.RSV_FLAG; //TODO: Verification necessary
-	RESET_Tx->MSN3_STAT = MSN3_FLAG;
-	RESET_Tx->MSN2_STAT = MSN2_FLAG;
-	RESET_Tx->MSN1_STAT = MSN1_FLAG;
-	RESET_Tx->BATT_TEMP = SAT_HEALTH.BATT_TEMP / 10;
-	RESET_Tx->BATT_VOLT = SAT_HEALTH.BATT_VOLT / 100;
-	RESET_Tx->SOL_1_STAT = BEACON_TYPE_A.SOL_P1_STAT ? ACTIVE : INACTIVE;
-	RESET_Tx->SOL_2_STAT = BEACON_TYPE_A.SOL_P2_STAT ? ACTIVE : INACTIVE;
-	RESET_Tx->SOL_3_STAT = BEACON_TYPE_A.SOL_P3_STAT ? ACTIVE : INACTIVE;
-	RESET_Tx->SOL_4_STAT = BEACON_TYPE_A.SOL_P4_STAT ? ACTIVE : INACTIVE;
-	RESET_Tx->SOL_5_STAT = BEACON_TYPE_A.SOL_P5_STAT ? ACTIVE : INACTIVE;
-	RESET_Tx->RSV_CMD = SAT_HEALTH.RSV_CMD;
-	RESET_Tx->CHK_SUM = 0;
-	for (int i = 0; i < RESET_DATA_TX_LEN - 3; i++) {
-		RESET_Tx->CHK_SUM += *(&RESET_Tx->HEAD + i);
-	}
-	RESET_Tx->FOOT = FOOTER;
-}
+//void UPDATE_RST_DATA(RSTTx_DATASET_TypeDef *RESET_Tx, RST_CMD TYPE) {
+//
+//	if ((TYPE != OPER_MODE_1) && (TYPE != OPER_MODE_2) && (TYPE != OPER_MODE_3)
+//			&& (TYPE != OPER_MODE_4) && (TYPE != RST_SAT)
+//			&& (BEACON_FLAG != 1)) {
+//		ADC1_DMA_CONVERT();
+//		ADC2_DMA_CONVERT();
+//		GET_EXT_ADC_DATA();
+//		DATA_CONVERSION();
+//		MAKE_SAT_TEMPS();
+//		MAKE_SAT_VOLTS();
+//		CHECK_POWER_STATE(SAT_HEALTH.BATT_VOLT);
+//
+//	}
+//
+//	RESET_Tx->HEAD = HEADER;
+//	RESET_Tx->TIM_DAYS = TIM_DAY;
+//	RESET_Tx->TIM_HOUR = TIM_HOUR;
+//	RESET_Tx->TIM_SEC = TIM_SEC;
+//	RESET_Tx->CMD = TYPE;
+//	if (ANT_DEPLOY_STATUS) {
+//		RESET_Tx->ANT_DEP_STAT = 0xDE;
+//	} else {
+//		RESET_Tx->ANT_DEP_STAT = 0x00;
+//	}
+//
+//	RESET_Tx->UL_STAT = DCOMMAND_RX_SUCCESS;
+//	RESET_Tx->OPER_MODE = OPER_MODES;
+//	RESET_Tx->MSN_FLAG = MSN_STATUS;
+//	RESET_Tx->RSV_FLAG = SAT_HEALTH.RSV_FLAG; //TODO: Verification necessary
+//	RESET_Tx->MSN3_STAT = MSN3_FLAG;
+//	RESET_Tx->MSN2_STAT = MSN2_FLAG;
+//	RESET_Tx->MSN1_STAT = MSN1_FLAG;
+//	RESET_Tx->BATT_TEMP = SAT_HEALTH.BATT_TEMP / 10;
+//	RESET_Tx->BATT_VOLT = SAT_HEALTH.BATT_VOLT / 100;
+//	RESET_Tx->SOL_1_STAT = BEACON_TYPE_A.SOL_P1_STAT ? ACTIVE : INACTIVE;
+//	RESET_Tx->SOL_2_STAT = BEACON_TYPE_A.SOL_P2_STAT ? ACTIVE : INACTIVE;
+//	RESET_Tx->SOL_3_STAT = BEACON_TYPE_A.SOL_P3_STAT ? ACTIVE : INACTIVE;
+//	RESET_Tx->SOL_4_STAT = BEACON_TYPE_A.SOL_P4_STAT ? ACTIVE : INACTIVE;
+//	RESET_Tx->SOL_5_STAT = BEACON_TYPE_A.SOL_P5_STAT ? ACTIVE : INACTIVE;
+//	RESET_Tx->RSV_CMD = SAT_HEALTH.RSV_CMD;
+//	RESET_Tx->CHK_SUM = 0;
+//	for (int i = 0; i < RESET_DATA_TX_LEN - 3; i++) {
+//		RESET_Tx->CHK_SUM += *(&RESET_Tx->HEAD + i);
+//	}
+//	RESET_Tx->FOOT = FOOTER;
+//}
 
 /*
  * @brief Checks the power level, power modes and updates accordingly
@@ -1800,9 +1792,9 @@ uint8_t UPDATE_OPERATION_MODE(OPERA_MODES MODE) {
 	RESET_DATA_TX_FLAG = 0;
 	RESET_DATA_RX_FLAG = 0;
 
-	HAL_UART_Transmit_IT(&RESET_STREAM, (uint8_t*) &RESET_Tx,
+	HAL_UART_Transmit_IT(&MSN3_STREAM, (uint8_t*) &RESET_Tx,
 	RESET_DATA_TX_LEN);
-	HAL_UART_Transmit_IT(&RESET_ALT_STREAM, (uint8_t*) &RESET_Tx,
+	HAL_UART_Transmit_IT(&MSN3_STREAM, (uint8_t*) &RESET_Tx,
 	RESET_DATA_TX_LEN);
 
 	uint32_t currenttick = HAL_GetTick();

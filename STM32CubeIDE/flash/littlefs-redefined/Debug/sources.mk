@@ -20,6 +20,8 @@ OBJCOPY_BIN :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+Core/COMMON_FUNCTIONS \
+Core/EXT_ADC \
 Core/Src \
 Core/Startup \
 Drivers/STM32F4xx_HAL_Driver \

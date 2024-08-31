@@ -7,8 +7,11 @@
 C_SRCS += \
 ../Core/Src/MT25Q.c \
 ../Core/Src/adc.c \
+../Core/Src/command_parser.c \
 ../Core/Src/dma.c \
 ../Core/Src/gpio.c \
+../Core/Src/imu.c \
+../Core/Src/internal_adc.c \
 ../Core/Src/lfs.c \
 ../Core/Src/lfs_port.c \
 ../Core/Src/lfs_util.c \
@@ -27,8 +30,11 @@ C_SRCS += \
 OBJS += \
 ./Core/Src/MT25Q.o \
 ./Core/Src/adc.o \
+./Core/Src/command_parser.o \
 ./Core/Src/dma.o \
 ./Core/Src/gpio.o \
+./Core/Src/imu.o \
+./Core/Src/internal_adc.o \
 ./Core/Src/lfs.o \
 ./Core/Src/lfs_port.o \
 ./Core/Src/lfs_util.o \
@@ -47,8 +53,11 @@ OBJS += \
 C_DEPS += \
 ./Core/Src/MT25Q.d \
 ./Core/Src/adc.d \
+./Core/Src/command_parser.d \
 ./Core/Src/dma.d \
 ./Core/Src/gpio.d \
+./Core/Src/imu.d \
+./Core/Src/internal_adc.d \
 ./Core/Src/lfs.d \
 ./Core/Src/lfs_port.d \
 ./Core/Src/lfs_util.d \

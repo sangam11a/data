@@ -10,8 +10,8 @@
 #ifndef MEM_ADDR_H_
 #define MEM_ADDR_H_
 
-#include "../../COMMON_FUNCTIONS/USR_FUNCTIONS.h"
-#include "../../MISSION/mission.h"
+#include "../COMMON_FUNCTIONS/USR_FUNCTIONS.h"
+//#include "../../MISSION/mission.h"
 //#include "USR_FUNCTIONS.h"
 //#include "mission.h"
 //#include "MT25QL.h"

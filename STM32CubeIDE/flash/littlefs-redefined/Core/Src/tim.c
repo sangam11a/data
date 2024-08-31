@@ -143,7 +143,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
 
     /* TIM7 DMA Init */
     /* TIM7_UP Init */
-    hdma_tim7_up.Instance = DMA1_Stream2;
+    hdma_tim7_up.Instance = DMA1_Stream4;
     hdma_tim7_up.Init.Channel = DMA_CHANNEL_1;
     hdma_tim7_up.Init.Direction = DMA_PERIPH_TO_MEMORY;
     hdma_tim7_up.Init.PeriphInc = DMA_PINC_DISABLE;

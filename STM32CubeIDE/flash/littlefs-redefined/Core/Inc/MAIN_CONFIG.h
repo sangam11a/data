@@ -84,8 +84,8 @@ extern SPI_HandleTypeDef hspi4;
 #define MAIN_FM					hspi3
 #define SMSN_FM					hspi4
 //
-//#define	I_ADC1					hadc1
-//#define I_ADC2					hadc3
+#define	I_ADC1					hadc1
+#define I_ADC2					hadc3
 
 //#define RESET_TIMER				htim6
 //#define uS_Delay_TIMER			htim7

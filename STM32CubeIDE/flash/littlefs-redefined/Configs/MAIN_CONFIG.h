@@ -12,7 +12,7 @@
  * 																						*
  * UART1  -> COM_TCV_STREAM -> 115200 bps -> Interrupt									*
  * UART3  -> RESET_STREAM   -> 115200 bps -> Interrupt									*
- * UART6  -> MSN1_STREAM    -> 9600 bps												*
+ * UART6  -> MSN1_STREAM    -> 9600 bps												    *
  * UART7  -> MSN2_STREAM	 -> 115200 bps												*
  * UART8  -> MSN3_STREAM	 -> 115200 bps												*
  * 																						*
@@ -73,12 +73,16 @@
 //#define S_COM_MODE
 //#define S_COM_PLAN_F_MODE
 #define ADDNICS_COM_MODE
+extern UART_HandleTypeDef huart7,huart1, huart6, huart8, huart3;
+extern SPI_HandleTypeDef hspi2, hspi3, hspi4;
+extern TIM_HandleTypeDef htim6, htim7;
+extern ADC_HandleTypeDef hadc1, hadc2;
 
 #define DEBUG_STREAM			huart7
 #define COM_TCV_STREAM 			huart1
-#define RESET_ALT_STREAM		huart2
-#define MSN1_STREAM				huart6
-#define MSN2_STREAM				huart7
+#define RESET_ALT_STREAM		huart7
+#define MSN1_STREAM				huart8
+#define MSN2_STREAM				huart6
 #define MSN3_STREAM				huart8
 
 #define E_ADC					hspi2
@@ -88,7 +92,7 @@
 #define	I_ADC1					hadc1
 #define I_ADC2					hadc2
 
-#define RESET_TIMER				htim9
+#define RESET_TIMER				htim6
 #define uS_Delay_TIMER			htim6
 #define HK_TIMER				htim7
 

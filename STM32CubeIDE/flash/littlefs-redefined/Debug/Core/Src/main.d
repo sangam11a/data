@@ -39,8 +39,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  C:/Users/sanga/STM32Cube/Repository/STM32Cube_FW_F4_V1.26.2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../USB_DEVICE/Target/usbd_conf.h ../Core/Inc/gpio.h \
  ../Core/Inc/lfs_util.h ../Core/Inc/lfs.h ../Core/Inc/lfs_util.h \
- ../Core/Inc/MT25Q.h ../Core/Inc/nor.h ../Core/Inc/nor_defines.h \
- ../Core/Inc/nor_ids.h
+ ../Core/Inc/nor.h ../Core/Inc/nor_defines.h ../Core/Inc/nor_ids.h \
+ ../Core/Src/../../IMU/imu.h ../Core/Inc/command_parser.h \
+ ../Core/Inc/lfs.h
 
 ../Core/Inc/main.h:
 
@@ -140,10 +141,14 @@ C:/Users/sanga/STM32Cube/Repository/STM32Cube_FW_F4_V1.26.2/Middlewares/ST/STM32
 
 ../Core/Inc/lfs_util.h:
 
-../Core/Inc/MT25Q.h:
-
 ../Core/Inc/nor.h:
 
 ../Core/Inc/nor_defines.h:
 
 ../Core/Inc/nor_ids.h:
+
+../Core/Src/../../IMU/imu.h:
+
+../Core/Inc/command_parser.h:
+
+../Core/Inc/lfs.h:

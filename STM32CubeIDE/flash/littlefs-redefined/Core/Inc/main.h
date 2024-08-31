@@ -97,7 +97,10 @@ void Error_Handler(void);
 #define CS_MPU_Pin GPIO_PIN_10
 #define CS_MPU_GPIO_Port GPIOH
 /* USER CODE BEGIN Private defines */
-
+#define KILL_SWITCH1_STAT_Pin GPIO_PIN_8
+#define KILL_SWITCH1_STAT_GPIO_Port GPIOG
+#define KILL_SWITCH2_STAT_Pin GPIO_PIN_7
+#define KILL_SWITCH2_STAT_GPIO_Port GPIOG
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -64,6 +64,8 @@ extern uint8_t SAT_TEMPS[10][2];
 extern uint8_t SAT_VOLTS[8][2];
 extern uint8_t SAT_CURR[14][2];
 extern uint8_t SAT_IMU[9][2];
+extern uint8_t SAT_IMU1[17];
+
 
 ////////////////////////////////////////////////
 

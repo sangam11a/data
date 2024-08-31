@@ -7,17 +7,22 @@
 
 #pragma once
 
-#ifndef INC_ADS7953SDBT_H_
-#define INC_ADS7953SDBT_H_
+#ifndef EXT_ADC_ADS7953SDBT_H_
+#define EXT_ADC_ADS7953SDBT_H_
 
 #include "main.h"
-#include "../CONFIGS/MAIN_CONFIG.h"
+//#include "../CONFIGS/MAIN_CONFIG.h"
 
 extern SPI_HandleTypeDef hspi2;
 extern uint8_t adc_data[2];
 extern uint8_t adc1_data[2];
+const uint8_t E_ADC_DATA_LEN = 16;
 extern int i, j;
 
+
+#define E_ADC_0_DATA_LEN 16
+#define E_ADC_1_DATA_LEN 16
+#define E_ADC hspi2
 //command codes definition for ADS7953SDBT analog to digital converter.
 
 /*commands to set the modes of the ADC*/
@@ -48,6 +53,7 @@ typedef enum _operation_modes{
 
 
 /*functions prototypes for ADC*/
+void READ_ADC_ID();
 void ADC_Enable();
 void ADC1_Enable();
 void ADC_Disable();

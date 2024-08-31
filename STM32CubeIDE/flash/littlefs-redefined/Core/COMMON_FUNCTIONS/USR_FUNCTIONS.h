@@ -14,22 +14,18 @@
 #include "usbd_cdc_if.h"
 #endif
 #include <stdarg.h>
-#include "../../COMMON_FUNCTIONS/mem_addr.h"
-#include "../../MISSION/res_table.h"
-#include "../../COM/Com_Operations.h"
+//#include "../../COMMON_FUNCTIONS/mem_addr.h"
+//#include "../../MISSION/res_table.h"
+//#include "../../COM/Com_Operations.h"
+
 
 int buffersize(char *buff);
 
-int buffersize(char *buff);
 
-#ifdef DEBUG_MODE
-#ifndef TRACE_MODE
 void myprintf(const char *fmt, ...);
-#endif
-#ifdef TRACE_MODE
+
 int write(int32_t file, uint8_t *ptr, int32_t len);
-#endif
-#endif
+
 
 /* Main STM operation Functions */
 

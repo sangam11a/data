@@ -32,8 +32,10 @@
 #include "stdarg.h"
 #include "lfs_util.h"
 #include "lfs.h"
-#include "MT25Q.h"
+//#include "MT25Q.h"
 #include "nor.h"
+#include "../../IMU/imu.h"
+#include "command_parser.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,7 +50,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-void myprintf(const char *fmt, ...);
+//void myprintf(const char *fmt, ...);
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -65,6 +67,12 @@ UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 //uint8_t tx[]={'S','A','N','G','A','M'};
+HAL_StatusTypeDef catch;
+uint8_t HANDSHAKE_STATUS = 0;
+uint8_t COM_RX_DATA[30];
+uint16_t adc_buf[17];
+float adc_conv_buf[17];
+
 uint8_t hk_counter=0;
 uint16_t tim_val = 0;
 uint16_t address = 0x00;
@@ -78,11 +86,13 @@ typedef struct{
 	uint32_t secCount;
 	uint32_t bootCount;
 }app_count_t;
-	lfs_file_t File;
+	lfs_file_t File,File2[2];
 		char Text[20];
 		app_count_t Counter = {0};
-		lfs_t Lfs;
+		lfs_t Lfs,Lfs2[2];
 		nor_t Nor;
+		uint16_t adc_channels[17] = {'66535'};
+		uint16_t adc1_channels[17] = {'66535'};
 
 /* USER CODE END PV */
 
@@ -366,16 +376,40 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	  hk_counter++;
 	  if(hk_counter%30 == 0){ char uart_buf[20] ;
 		  sprintf(uart_buf, "%u us\0\r\n", tim_val);
+		  HAL_UART_Transmit(&huart7, uart_buf, sizeof(uart_buf), 100);
+		  HK_IMU();
 
-		      HAL_UART_Transmit(&huart7, uart_buf, sizeof(uart_buf), 100);
-		  HAL_UART_Transmit(&huart7,"\n-----------------------------Got this triggered-\----------n", sizeof("\n-----------------------------Got this triggered-\----------n"), 100);
+		  HAL_UART_Transmit(&huart7, "\n-----------------------------Collected HK DATA-----------n", sizeof("\n-----------------------------Collected HK DATA-----------n"), 100);
 		  hk_counter=0;
+		  RUN_ADC2();
 		  tim_val = 0 ;
 	  }
 
   }
 }
 
+void RUN_ADC2(){
+	HAL_UART_Transmit(&huart7,"\n\n********************S2S ADC is starting ************\n", sizeof("********************S2S ADC is starting ************\n"),1000);
+
+			ADC_Operate(adc_channels, adc1_channels);
+			 ADC_Conv_Data(adc_conv_buf, adc_buf);
+			for(int i =0; i<sizeof(adc_channels); i++)
+			myprintf("%d | %d **", adc_channels[i],adc1_channels[i]);
+			//		HK_IMU();
+			HAL_Delay(10000);
+			HAL_UART_Transmit(&huart7,"\n\n********************S2S ADC data collection complete ************\n", sizeof("********************S2S ADC data collection complete************\n"),1000);
+
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+//			if(huart->Instance == &huart1)
+			{
+				printf("Data received on COM UART1\n");
+				parse_command(&COM_RX_DATA,Lfs, File);
+
+			    HAL_UART_Receive_DMA(&COM_uart, COM_RX_DATA, sizeof(COM_RX_DATA));
+			}
+		}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -407,7 +441,6 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -416,28 +449,79 @@ int main(void)
   MX_UART7_Init();
   MX_USB_DEVICE_Init();
   MX_SPI4_Init();
-  MX_USART1_UART_Init();
   MX_ADC1_Init();
   MX_DMA_Init();
   MX_TIM6_Init();
   MX_ADC3_Init();
   MX_TIM7_Init();
+  MX_ADC2_Init();
+  MX_UART8_Init();
+  MX_USART6_UART_Init();
+  MX_USART3_UART_Init();
+  MX_USART1_UART_Init();
+  MX_SPI5_Init();
+  MX_SPI2_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim6);
-  HAL_TIM_Base_Start_IT(&htim7);
-
+  HAL_GPIO_WritePin(GPIOH, GPIO_PIN_11, GPIO_PIN_RESET);
   HAL_Delay(500);
 
- HAL_UART_Transmit(&huart7,"********************S2S OBC is starting ************\n", sizeof("********************S2S OBC is starting ************\n"),1000);
+  HAL_GPIO_WritePin(GPIOH, GPIO_PIN_11, GPIO_PIN_SET);
+        uint8_t HANDSHAKE[7] = {0x53,0xac,0x01,0x02,0x03,0x7e},ret_handshake[7]={'\0'};
+        do{
+        	HAL_Delay(1000);
+     	   if(HAL_UART_Transmit(&COM_uart, HANDSHAKE, sizeof(HANDSHAKE),1000) == HAL_OK){
+     		   if(HAL_UART_Receive(&COM_uart, ret_handshake, sizeof(ret_handshake), 1000) == HAL_OK)
+     			   for(int i =0 ; i<sizeof(HANDSHAKE); i++){
+     				   if(HANDSHAKE[i] != ret_handshake[i]){
+     					   HANDSHAKE_STATUS =1 ;
+     					   break;
+     				   }
+     				   else{
+     					   HANDSHAKE_STATUS  = 2;
+     				   }
+     		   }
+//     		   if(HANDSHAKE_STATUS == 2){
+//     			   break;
+//     		   }
+     		   HAL_Delay(500);
+     	   }
+        }while(HANDSHAKE_STATUS == 1);
+        myDebug("Handshake with COM successful.\n");
+
+//        create_empty_files();
+
+
+  HAL_TIM_Base_Start_IT(&htim6);
+  HAL_TIM_Base_Start_IT(&htim7);
+//  HAL_UART_Receive_DMA(&COM_uart, COM_RX_DATA, sizeof(COM_RX_DATA));
+
+  HAL_UART_Transmit(&huart7,"********************S2S OBC is starting ************\n", sizeof("********************S2S OBC is starting ************\n"),1000);
+
+//	while(1){
+//		HAL_UART_Transmit(&huart7,"\n\n********************S2S ADC is starting ************\n", sizeof("********************S2S ADC is starting ************\n"),1000);
+//
+//		ADC_Operate(adc_channels, adc1_channels);
+//		 ADC_Conv_Data(adc_conv_buf, adc_buf);
+//		for(int i =0; i<sizeof(adc_channels); i++)
+//		myprintf("%d | %d **", adc_channels[i],adc1_channels[i]);
+//		//		HK_IMU();
+//		HAL_Delay(10000);
+//
+//	}
+
+
+
 
  __init_storage();
  list_files(&Lfs);
+
 //  char path[200];
 // char txt[]="sangam is writing it manually";
 //
 //	__init_littefs();
  list_files_with_size(&Lfs, "/");
-// 		  lfs_file_open(&Lfs, &File, "flags.txt", LFS_O_RDWR  | LFS_O_CREAT  |LFS_O_APPEND);// |LFS_O_APPEND
+// 		  lfs_file_open(&Lfs, &File, "flags.txt", LFS_O_TRUNC  | LFS_O_CREAT );// |LFS_O_APPEND |LFS_O_APPEND
 // 		  lfs_file_write(&Lfs, &File, &txt, sizeof(txt));
 // 		  lfs_file_close(&Lfs, &File);
 // read_file_from_littlefs(&Lfs, "satHealth.txt");
@@ -445,13 +529,76 @@ int main(void)
 // read_file_from_littlefs(&Lfs, "flags.txt");
 
  list_files_with_size(&Lfs, "/");
+ truncate_text_file1(Lfs, File );
  uint8_t count=0;uint16_t timer_val;
+
+  uint8_t command[30]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29};
+  command[16]=0x01;
+  command[17]=0xca;
+  command[18]=0xd1;
+  command[19]=0xf2;
+  parse_command(command, Lfs, File );
+
+  command[16]=0x01;
+    command[17]=0x1d;
+    command[18]=0xd1;
+    command[19]=0xf2;
+    parse_command(command, Lfs, File );
+
+    command[16]=0x01;
+      command[17]=0xee;
+      command[18]=0xee;
+      command[19]=0xee;
+      parse_command(command, Lfs, File );
+
+      command[16]=0x01;
+        command[17]=0xee;
+        command[18]=0xaa;
+        command[19]=0xaa;
+        parse_command(command, Lfs, File );
+
+        command[16]=0x01;
+          command[17]=0x1a;
+          command[18]=0xe0;
+          command[19]=0x1e;
+          parse_command(command, Lfs, File );
+
+          command[16]=0x02;
+          command[17]=0xfd;
+          command[18]=0xba;
+          command[19]=0xd0;
+          parse_command(command, Lfs, File );
+
+          command[16]=0x03;
+          command[17]=0x0e;
+          command[18]=0x53;
+          command[19]=0xce;
+          parse_command(command, Lfs, File );
+
+          command[16]=0x04;
+          command[17]=0xcc;
+          command[18]=0x5e;
+          command[19]=0xbd;
+          parse_command(command, Lfs, File );
+
+          command[16]=0x05;
+          command[17]=0xac;
+          command[18]=0xcf;
+          command[19]=0xcf;
+          parse_command(command, Lfs, File );
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+//	  if(HAL_UART_Receive(&huart2, COM_RX_DATA,30,1000)==HAL_OK){
+//		  myprintf("Received data %s\n",COM_RX_DATA);
+//	  }
+	  catch = HAL_UART_Receive(&COM_uart, COM_RX_DATA,10,5000);
+	  if(catch==HAL_OK){
+			  myprintf("Received data %s\n",COM_RX_DATA);
+		  }
 
     /* USER CODE END WHILE */
 
