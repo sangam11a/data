@@ -1,0 +1,4 @@
+internal_flash.c:16:17:GetSector	24	static
+internal_flash.c:96:19:WRITE_TO_INTERNAL_FLASH	56	dynamic
+internal_flash.c:128:6:READ_FRM_INTERNAL_FLASH	32	static
+internal_flash.c:141:6:ERASE_INTERNAL_FLASH	16	static
